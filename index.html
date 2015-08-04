@@ -1,11 +1,12 @@
 <html>
     <head>
-        <title>NLSC</title>
+        <title>本地街圖</title>
+ 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
         <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script src="./leaflet-osm.js"></script>
-        <script src="../lib/nlsc.js"></script>
+        <script src="./lib/leaflet-osm.js"></script>
+        <script src="./lib/nlsc.js"></script>
         <style>
 #map { height: 100%; width:100% }
         </style>
@@ -14,7 +15,14 @@
 <div id="map"></div>
 <script>
 
+L.OSM.Local = L.OSM.TileLayer.extend({
+  options: {
+    url: '/osm_tiles/{z}/{x}/{y}.png',
+  }
+});
+var localmap = new L.OSM.Local();
 var osm = new L.OSM.Mapnik();
+
 var nlscmaps = [
     // new L.NLSC.PHOTO2({opacity: 0.7}),
     new L.NLSC.B5000({opacity: 0.7}),
@@ -29,6 +37,7 @@ var nlscmaps = [
     ];
 
 var baseMaps = {};
+baseMaps["本地街圖"] = localmap;
 baseMaps["開放街圖"] = osm;
 baseMaps["正射影像圖(通用版)"] = new L.NLSC.PHOTO2({opacity: 1});
 
@@ -41,7 +50,8 @@ for (var i in nlscmaps) {
 var map = new L.Map('map', {
     center: new L.LatLng( 25.03738, 121.56351 ),
     zoom: 17,
-    layers: [baseMaps["正射影像圖(通用版)"], overlayMaps["通用版電子地圖透明"]],
+    // layers: [baseMaps["正射影像圖(通用版)"], overlayMaps["通用版電子地圖透明"]],
+    layers: [baseMaps["本地街圖"]],
 } )
 .addControl(new L.Control.Scale())
 .addControl(new L.Control.Layers(baseMaps, overlayMaps));
